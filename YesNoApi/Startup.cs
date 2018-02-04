@@ -15,26 +15,52 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace YesNoApi
 {
+    /// <summary>
+    /// Startup.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:YesNoApi.Startup"/> class.
+        /// </summary>
+        /// <param name="configuration">Configuration.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        /// <param name="services">Services.</param>
+        /// <remarks>This method gets called by the runtime. Use this method to add services to the container.</remarks>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwaggerGen(a=>
             {
                 a.SwaggerDoc("v1", new Info {Title="SayYes" });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var basePath = AppContext.BaseDirectory;
+                var xmlPath = Path.Combine(basePath, "YesNoApi.xml");
+                a.IncludeXmlComments(xmlPath);
             });
             services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configure the specified app and env.
+        /// </summary>
+        /// <returns>The configure.</returns>
+        /// <param name="app">App.</param>
+        /// <param name="env">Env.</param>
+        /// <remarks>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</remarks>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
 
