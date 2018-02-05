@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,8 @@ namespace YesNoApi
     /// </summary>
     public class Startup
     {
+        const string _schemeName = "adB2c";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:YesNoApi.Startup"/> class.
         /// </summary>
@@ -42,6 +45,18 @@ namespace YesNoApi
         /// <remarks>This method gets called by the runtime. Use this method to add services to the container.</remarks>
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.AddAuthentication(b=>
+            {
+                b.DefaultAuthenticateScheme = _schemeName;
+                b.DefaultChallengeScheme = _schemeName;
+            }).AddJwtBearer(_schemeName, a=>
+            {
+                a.Audience = "96e7efbe-a021-4e1c-a6fa-38a543183c7b";
+                a.Authority = "https://login.microsoftonline.com/tfp/c66ea553-07d4-47bf-b0d2-689e2b6e7329/b2c_1_yesnopolicy/v2.0/";
+            });
+
             services.AddSwaggerGen(a=>
             {
                 a.SwaggerDoc("v1", new Info {Title="SayYes" });
@@ -76,7 +91,7 @@ namespace YesNoApi
             {
                 a.SwaggerEndpoint("/swagger/v1/swagger.json", "SayYes Documentation");
             });
-
+            app.UseAuthentication();
 
             app.UseMvc();
         }
