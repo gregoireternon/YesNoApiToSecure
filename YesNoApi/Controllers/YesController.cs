@@ -14,7 +14,6 @@ namespace YesNoApi.Controllers
     /// Yes controller.
     /// </summary>
     [Produces("application/json")]
-    [Authorize]
     [Route("api/Yes")]
     public class YesController : Controller
     {

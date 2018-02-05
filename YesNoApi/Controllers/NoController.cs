@@ -12,6 +12,7 @@ namespace YesNoApi.Controllers
 {
     [Produces("application/json")]
     [Route("api/No")]
+    [AllowAnonymous]
     public class NoController : Controller
     {
         [HttpGet]
