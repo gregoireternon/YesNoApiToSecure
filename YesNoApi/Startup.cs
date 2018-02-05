@@ -45,6 +45,7 @@ namespace YesNoApi
             services.AddSwaggerGen(a=>
             {
                 a.SwaggerDoc("v1", new Info {Title="SayYes" });
+                a.AddSecurityDefinition("Bearer", new ApiKeyScheme() { In = "header", Description = "Please insert JWT with Bearer into field", Name = "Authorization", Type = "apiKey" });
 
                 // Set the comments path for the Swagger JSON and UI.
                 var basePath = AppContext.BaseDirectory;
