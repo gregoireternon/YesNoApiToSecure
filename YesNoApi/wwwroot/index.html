@@ -25,7 +25,6 @@
             $("#resultImg").attr("src",'https://yesno.wtf/assets/no/3-80a6f5b5d6684674bcfeda34accca4e1.gif');
 
             var toto = window.location.search.substring(1);
-            alert('toto:'+getUrlParameter('kikoo'));
 
 
             $.ajax({
@@ -34,7 +33,7 @@
                     'token':getUrlParameter('token')
                 },
                 success:function(data){
-                    
+                    //alert('toto:' + getUrlParameter('token'));
                     $("#resultImg").attr("src",data.image);
                     $('#resultContent').text(data.answer);
                 },
