@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -23,6 +29,7 @@ namespace YesNoApi
     public class Startup
     {
         const string _schemeName = "adB2c";
+        const string _googleScheme = "GOOGLE";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:YesNoApi.Startup"/> class.
@@ -46,17 +53,36 @@ namespace YesNoApi
         /// <remarks>This method gets called by the runtime. Use this method to add services to the container.</remarks>
         public void ConfigureServices(IServiceCollection services)
         {
-          
 
-            services.AddAuthentication(b=>
+            services.AddAuthentication(b =>
             {
                 b.DefaultAuthenticateScheme = _schemeName;
                 b.DefaultChallengeScheme = _schemeName;
-            }).AddJwtBearer(_schemeName, a=>
+            }).AddJwtBearer(_schemeName, a =>
             {
                 a.Audience = "96e7efbe-a021-4e1c-a6fa-38a543183c7b";
                 a.Authority = "https://login.microsoftonline.com/tfp/c66ea553-07d4-47bf-b0d2-689e2b6e7329/b2c_1_yesnopolicy/v2.0/";
-            });
+            }).AddJwtBearer(_googleScheme, b=>
+            {
+                b.Authority = "https://accounts.google.com";
+                //b.MetadataAddress = "https://accounts.google.com/.well-known/openid-configuration";
+                //b.Audience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
+                //b.RequireHttpsMetadata = false;
+                b.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidIssuer = "accounts.google.com",
+                    ValidAudience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com",
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    RequireSignedTokens = true,
+                    ValidateIssuerSigningKey = true
+                };
+            }); 
+            //.AddGoogle(googleOptions =>
+            //{
+            //    googleOptions.ClientId = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";// "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
+            //    googleOptions.ClientSecret = "D6IVXbXGEq6ndAMgcBji-lKS";// "D6IVXbXGEq6ndAMgcBji-lKS";
+            //});
 
             services.AddSwaggerGen(a=>
             {
@@ -98,8 +124,37 @@ namespace YesNoApi
                 a.SwaggerEndpoint("/swagger/v1/swagger.json", "SayYes Documentation");
             });
             app.UseAuthentication();
+            app.Use(async (context, next) =>
+            {
+                var principal = new ClaimsPrincipal();
+
+                var result1 = await context.AuthenticateAsync(_schemeName);
+                if (result1?.Principal != null)
+                {
+                    foreach (ClaimsIdentity ci in result1.Principal.Identities)
+                    {
+                        ci.AddClaim(new Claim(ClaimTypes.Role, "ADB2C"));
+                    }
+                    principal.AddIdentities(result1.Principal.Identities);
+                }
+                var result2 = await context.AuthenticateAsync(_googleScheme);
+                if (result2?.Principal != null)
+                {
+                    foreach (ClaimsIdentity ci in result2.Principal.Identities)
+                    {
+                        ci.AddClaim(new Claim(ClaimTypes.Role, _googleScheme));
+                    }
+                    principal.AddIdentities(result2.Principal.Identities);
+                }
+
+
+                context.User = principal;
+
+                await next();
+            });
 
             app.UseMvc();
         }
+
     }
 }
