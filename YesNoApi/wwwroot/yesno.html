@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <script type="text/javascript" src="./jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/global.css"> 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript">
         var getUrlParameter = function getUrlParameter(sParam) {
-            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            var sPageURL = decodeURIComponent(window.location.hash.substring(1)),
                 sURLVariables = sPageURL.split('&'),
                 sParameterName,
                 i;
@@ -25,23 +26,28 @@
             $("#resultImg").attr("src",'https://yesno.wtf/assets/no/3-80a6f5b5d6684674bcfeda34accca4e1.gif');
 
             var toto = window.location.search.substring(1);
-
+            var processResult = function (data) {
+                //alert('toto:' + getUrlParameter('token'));
+                $("#resultImg").attr("src", data.image);
+                $('#resultContent').text(data.answer);
+            };
 
             $.ajax({
                 url:'../api/Yes',
                 headers:{
-                    'token':getUrlParameter('token')
+                    'Authorization': 'Bearer ' + getUrlParameter('id_token')
                 },
-                success:function(data){
-                    //alert('toto:' + getUrlParameter('token'));
-                    $("#resultImg").attr("src",data.image);
-                    $('#resultContent').text(data.answer);
-                },
-                error:function(){
-                    alert('error');
+                success: processResult,
+                error: function () {
+                    $.ajax({
+                        url: '../api/No',
+                        success: processResult
+                    });
                 }
 
             });
+
+            
 
         });
 
@@ -49,10 +55,12 @@
     </script>
 </head>
 <body>
-    <div>
+    <div class="rootbeautiful">
         <div id="resultContent" style="color:blue;font-size: 200px;text-transform: uppercase;font-family: Arial; ">
         </div>
-        <img id="resultImg"/>
+        <div>
+            <img id="resultImg" style="width:500px;" />
+        </div>
     </div>
 </body>
 </html>

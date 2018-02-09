@@ -4,19 +4,35 @@
     <meta name="google-signin-client_id" content="114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+      <link rel="stylesheet" type="text/css" href="css/global.css"> 
       
   </head>
   <body>
-    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-      <div id="tokenDisplay">here is your token</div>
+      <div class="rootbeautiful">
+          <div class="wonderful" style="background-color:black;">
+              <div id="noAuth">
+                  <img src="img/incognito.png" style="width:150px;" />
+              </div>
+          </div>
+          <div class="wonderful">
+              <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+              <div style="margin-top:10px;">
+                  <input type="text" id="tokenDisplay" value="Here should be displayed your google token" />
+              </div>
+              <div id="ignite" style="margin-top:10px;">
+                  <img src="img/ignition.png" style="width:100px;"/>
+              </div>
+          </div>
+          <div class="wonderful">
+              <div id="adb2cauth">
+                  <img src="img/ActiveDirecotry2.png" />
+              </div>
+          </div>
 
-      <div id="adb2cauth">
+          
 
       </div>
     <script>
-        $(document).ready(function () {
-            alert('ready');
-        });
       function onSignIn(googleUser) {
         // Useful data for your client-side scripts:
         var profile = googleUser.getBasicProfile();
@@ -29,9 +45,25 @@
 
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
-        $('#tokenDisplay').text(id_token);
+        $('#tokenDisplay').val(id_token);
         console.log("ID Token: " + id_token);
-      };
+        };
+
+        $(document).ready(function () {
+           
+            $("#adb2cauth").on('click', function () {
+                window.location.href = "https://login.microsoftonline.com/yesnoapidev.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_YesNoPolicy&client_id=96e7efbe-a021-4e1c-a6fa-38a543183c7b&nonce=defaultNonce&redirect_uri=http%3A%2F%2Flocalhost%3A63362%2Fyesno.html&scope=openid&response_type=id_token&prompt=login";//"yesno.html?id_token=" + $('#tokenDisplay').val();
+            });
+
+            $("#ignite").on('click', function () {
+                window.location.href = "yesno.html#id_token=" + $('#tokenDisplay').val();
+            });
+
+            $("#noAuth").on('click', function () {
+                window.location.href = "yesno.html";
+            });
+        });
+
     </script>
 
   </body>
