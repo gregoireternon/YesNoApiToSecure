@@ -66,17 +66,22 @@ namespace YesNoApi
             {
                 b.Authority = "https://accounts.google.com";
                 //b.MetadataAddress = "https://accounts.google.com/.well-known/openid-configuration";
-                //b.Audience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
+                b.Audience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
                 //b.RequireHttpsMetadata = false;
                 b.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     ValidIssuer = "accounts.google.com",
-                    ValidAudience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com",
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
-                    RequireSignedTokens = true,
-                    ValidateIssuerSigningKey = true
+                //    ValidAudience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com",
+                //    ValidateAudience = true,
+                //    ValidateIssuer = true,
+                //    RequireSignedTokens = true,
+                //    ValidateIssuerSigningKey = true
+                    
                 };
+            //}).AddOpenIdConnect(_googleScheme, t=>
+            //{
+            //    t.Authority = "https://accounts.google.com";
+            //    t.ClientId = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
             }); 
             //.AddGoogle(googleOptions =>
             //{
@@ -110,11 +115,14 @@ namespace YesNoApi
         /// <remarks>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</remarks>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
-            app.UseDefaultFiles().UseStaticFiles(new StaticFileOptions()
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseFileServer(new FileServerOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot")),
-                RequestPath = new PathString("/static")
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+                RequestPath = "/static",
+                EnableDirectoryBrowsing = true
             });
 
 

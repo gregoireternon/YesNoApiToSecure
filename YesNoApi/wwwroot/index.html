@@ -1,58 +1,38 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-    <script type="text/javascript" src="./jquery-3.3.1.min.js"></script>
-    <script type="text/javascript">
-        var getUrlParameter = function getUrlParameter(sParam) {
-            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                sURLVariables = sPageURL.split('&'),
-                sParameterName,
-                i;
+<html lang="en">
+  <head>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+      
+  </head>
+  <body>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+      <div id="tokenDisplay">here is your token</div>
 
-            for (i = 0; i < sURLVariables.length; i++) {
-                sParameterName = sURLVariables[i].split('=');
+      <div id="adb2cauth">
 
-                if (sParameterName[0] === sParam) {
-                    return sParameterName[1] === undefined ? true : sParameterName[1];
-                }
-            }
-        };
-
-        $(document).ready(function(){
-
-            $("#resultImg").attr("src",'https://yesno.wtf/assets/no/3-80a6f5b5d6684674bcfeda34accca4e1.gif');
-
-            var toto = window.location.search.substring(1);
-
-
-            $.ajax({
-                url:'../api/Yes',
-                headers:{
-                    'token':getUrlParameter('token')
-                },
-                success:function(data){
-                    //alert('toto:' + getUrlParameter('token'));
-                    $("#resultImg").attr("src",data.image);
-                    $('#resultContent').text(data.answer);
-                },
-                error:function(){
-                    alert('error');
-                }
-
-            });
-
+      </div>
+    <script>
+        $(document).ready(function () {
+            alert('ready');
         });
+      function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
 
-
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        $('#tokenDisplay').text(id_token);
+        console.log("ID Token: " + id_token);
+      };
     </script>
-</head>
-<body>
-    <div>
-        <div id="resultContent" style="color:blue;font-size: 200px;text-transform: uppercase;font-family: Arial; ">
-        </div>
-        <img id="resultImg"/>
-    </div>
-</body>
+
+  </body>
 </html>
