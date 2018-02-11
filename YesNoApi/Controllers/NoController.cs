@@ -10,11 +10,18 @@ using Newtonsoft.Json;
 
 namespace YesNoApi.Controllers
 {
+    /// <summary>
+    /// The No controller.
+    /// </summary>
     [Produces("application/json")]
     [Route("api/No")]
     [AllowAnonymous]
     public class NoController : Controller
     {
+        /// <summary>
+        /// Get the resulting 'No' value form the YesNo API with corresponding GIF image.
+        /// </summary>
+        /// <returns>The 'No' value..</returns>
         [HttpGet]
         public async Task<object> Get()
         {

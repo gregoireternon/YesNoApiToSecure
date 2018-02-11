@@ -28,8 +28,8 @@ namespace YesNoApi
     /// </summary>
     public class Startup
     {
-        const string _schemeName = "adB2c";
-        const string _googleScheme = "GOOGLE";
+        const string _adb2cSchemeName = "adB2c";
+        const string _googleSchemeName = "GOOGLE";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:YesNoApi.Startup"/> class.
@@ -37,7 +37,7 @@ namespace YesNoApi
         /// <param name="configuration">Configuration.</param>
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         /// <summary>
@@ -56,13 +56,13 @@ namespace YesNoApi
 
             services.AddAuthentication(b =>
             {
-                b.DefaultAuthenticateScheme = _schemeName;
-                b.DefaultChallengeScheme = _schemeName;
-            }).AddJwtBearer(_schemeName, a =>
+                b.DefaultAuthenticateScheme = _adb2cSchemeName;
+                b.DefaultChallengeScheme = _adb2cSchemeName;
+            }).AddJwtBearer(_adb2cSchemeName, a =>
             {
                 a.Audience = "96e7efbe-a021-4e1c-a6fa-38a543183c7b";
                 a.Authority = "https://login.microsoftonline.com/tfp/c66ea553-07d4-47bf-b0d2-689e2b6e7329/b2c_1_yesnopolicy/v2.0/";
-            }).AddJwtBearer(_googleScheme, b=>
+            }).AddJwtBearer(_googleSchemeName, b=>
             {
                 b.Authority = "https://accounts.google.com";
                 //b.MetadataAddress = "https://accounts.google.com/.well-known/openid-configuration";
@@ -136,21 +136,21 @@ namespace YesNoApi
             {
                 var principal = new ClaimsPrincipal();
 
-                var result1 = await context.AuthenticateAsync(_schemeName);
+                var result1 = await context.AuthenticateAsync(_adb2cSchemeName);
                 if (result1?.Principal != null)
                 {
                     foreach (ClaimsIdentity ci in result1.Principal.Identities)
                     {
-                        ci.AddClaim(new Claim(ClaimTypes.Role, "ADB2C"));
+                        ci.AddClaim(new Claim(ClaimTypes.Role,_adb2cSchemeName));
                     }
                     principal.AddIdentities(result1.Principal.Identities);
                 }
-                var result2 = await context.AuthenticateAsync(_googleScheme);
+                var result2 = await context.AuthenticateAsync(_googleSchemeName);
                 if (result2?.Principal != null)
                 {
                     foreach (ClaimsIdentity ci in result2.Principal.Identities)
                     {
-                        ci.AddClaim(new Claim(ClaimTypes.Role, _googleScheme));
+                        ci.AddClaim(new Claim(ClaimTypes.Role, _googleSchemeName));
                     }
                     principal.AddIdentities(result2.Principal.Identities);
                 }
