@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -26,7 +21,9 @@ namespace YesNoApi.Controllers
         {
             HttpClient client = new HttpClient();
             string res = await client.GetStringAsync("https://yesno.wtf/api?force=yes");
-            return JsonConvert.DeserializeObject<object>(res);
+            dynamic resobj = JsonConvert.DeserializeObject<object>(res);
+
+            return resobj;
             
         }
     }
