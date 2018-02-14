@@ -85,7 +85,7 @@ namespace YesNoApi
             services.AddMvc(c=>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                c.Filters.Add(new AuthorizeFilter(policy));
+                //c.Filters.Add(new AuthorizeFilter(policy));
             });
         }
 
@@ -114,35 +114,9 @@ namespace YesNoApi
             {
                 a.SwaggerEndpoint("/swagger/v1/swagger.json", "SayYes Documentation");
             });
-            app.UseAuthentication();
-            app.Use(async (context, next) =>
-            {
-                var principal = new ClaimsPrincipal();
-
-                var result1 = await context.AuthenticateAsync(_adb2cSchemeName);
-                if (result1?.Principal != null)
-                {
-                    foreach (ClaimsIdentity ci in result1.Principal.Identities)
-                    {
-                        ci.AddClaim(new Claim(ClaimTypes.Role,_adb2cSchemeName));
-                    }
-                    principal.AddIdentities(result1.Principal.Identities);
-                }
-                var result2 = await context.AuthenticateAsync(_googleSchemeName);
-                if (result2?.Principal != null)
-                {
-                    foreach (ClaimsIdentity ci in result2.Principal.Identities)
-                    {
-                        ci.AddClaim(new Claim(ClaimTypes.Role, _googleSchemeName));
-                    }
-                    principal.AddIdentities(result2.Principal.Identities);
-                }
-
-
-                context.User = principal;
-
-                await next();
-            });
+            //app.UseAuthentication();
+            
+            
 
             app.UseMvc();
         }
