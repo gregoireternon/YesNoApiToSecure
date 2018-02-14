@@ -65,29 +65,12 @@ namespace YesNoApi
             }).AddJwtBearer(_googleSchemeName, b=>
             {
                 b.Authority = "https://accounts.google.com";
-                //b.MetadataAddress = "https://accounts.google.com/.well-known/openid-configuration";
                 b.Audience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
-                //b.RequireHttpsMetadata = false;
                 b.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     ValidIssuer = "accounts.google.com",
-                //    ValidAudience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com",
-                //    ValidateAudience = true,
-                //    ValidateIssuer = true,
-                //    RequireSignedTokens = true,
-                //    ValidateIssuerSigningKey = true
-                    
                 };
-            //}).AddOpenIdConnect(_googleScheme, t=>
-            //{
-            //    t.Authority = "https://accounts.google.com";
-            //    t.ClientId = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
             }); 
-            //.AddGoogle(googleOptions =>
-            //{
-            //    googleOptions.ClientId = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";// "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
-            //    googleOptions.ClientSecret = "D6IVXbXGEq6ndAMgcBji-lKS";// "D6IVXbXGEq6ndAMgcBji-lKS";
-            //});
 
             services.AddSwaggerGen(a=>
             {

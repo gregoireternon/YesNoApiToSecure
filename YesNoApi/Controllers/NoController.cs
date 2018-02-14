@@ -15,7 +15,6 @@ namespace YesNoApi.Controllers
     /// </summary>
     [Produces("application/json")]
     [Route("api/No")]
-    [AllowAnonymous]
     public class NoController : Controller
     {
         /// <summary>
