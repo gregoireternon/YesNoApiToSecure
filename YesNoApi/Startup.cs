@@ -29,6 +29,8 @@ namespace YesNoApi
     public class Startup
     {
         const string _adb2cSchemeName = "adB2c";
+        //ADB2C authority example: "https://login.microsoftonline.com/tfp/12345678-07d4-47bf-b0d2-689e2b6e7329/b2c_1_yesnopolicy/v2.0/";
+
         const string _googleSchemeName = "GOOGLE";
 
         /// <summary>
@@ -54,23 +56,6 @@ namespace YesNoApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddAuthentication(b =>
-            {
-                b.DefaultAuthenticateScheme = _adb2cSchemeName;
-                b.DefaultChallengeScheme = _adb2cSchemeName;
-            }).AddJwtBearer(_adb2cSchemeName, a =>
-            {
-                a.Audience = "96e7efbe-a021-4e1c-a6fa-38a543183c7b";
-                a.Authority = "https://login.microsoftonline.com/tfp/c66ea553-07d4-47bf-b0d2-689e2b6e7329/b2c_1_yesnopolicy/v2.0/";
-            }).AddJwtBearer(_googleSchemeName, b=>
-            {
-                b.Authority = "https://accounts.google.com";
-                b.Audience = "114985050436-jrp914eou6kp12665mg8k0nloco6tc13.apps.googleusercontent.com";
-                b.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidIssuer = "accounts.google.com",
-                };
-            }); 
 
             services.AddSwaggerGen(a=>
             {
